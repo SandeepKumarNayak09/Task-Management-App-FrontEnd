@@ -61,16 +61,19 @@ const handleAddTask = async ()=>{
     }   
 }
 
-const fetchAllTask =async ()=>{
-   try{
-        const {data} = await GetAllTasks();
-      setTasks(data);
-      setCopyTasks(data);
-    }catch(err){
+const fetchAllTask = async () => {
+    try {
+        const { data } = await GetAllTasks();
+        const safeData = Array.isArray(data) ? data : [];
+        setTasks(safeData);
+        setCopyTasks(safeData);
+    } catch (err) {
         console.error(err);
-        notify('Failed to create Task', 'error')
-    }   
-}
+        notify('Failed to fetch tasks', 'error');
+        setTasks([]); // Ensure fallback
+        setCopyTasks([]);
+    }
+};
 useEffect(() =>{
     fetchAllTask()
 },[])
@@ -212,5 +215,6 @@ const handleCheckAndUncheck = (item) => {
      </div>
    )
  }
+ 
 //  1.22
  export default TaskManager
